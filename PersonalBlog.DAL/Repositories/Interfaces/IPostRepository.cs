@@ -7,8 +7,8 @@ public interface IPostRepository
     Task<Post?> GetByIdAsync(Guid id);
     
     Task<IEnumerable<Post>> GetAllAsync();
-    
-    Task AddAsync(Post post);
+
+    Task<Guid> AddAsync(Post post);
     
     void Update(Post post);
     

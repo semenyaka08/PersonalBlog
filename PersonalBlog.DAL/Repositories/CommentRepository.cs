@@ -21,7 +21,19 @@ public class CommentRepository : ICommentRepository
             .ToListAsync();
     }
 
-    public async Task AddAsync(Comment comment) => await _context.Comments.AddAsync(comment);
+    public async Task<Guid> AddAsync(Comment comment)
+    {
+        await _context.Comments.AddAsync(comment);
+
+        return comment.Id;
+    }
     
     public void Delete(Comment comment) => _context.Comments.Remove(comment);
+    
+    public async Task<Comment?> GetByIdAsync(Guid id)
+    {
+        var comment = await _context.Comments.FirstOrDefaultAsync(c => c.Id == id);
+        
+        return comment;
+    }
 }

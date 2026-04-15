@@ -27,7 +27,11 @@ public class PostRepository : IPostRepository
             .ToListAsync();
     }
 
-    public async Task AddAsync(Post post) => await _context.Posts.AddAsync(post);
+    public async Task<Guid> AddAsync(Post post)
+    {
+        await _context.Posts.AddAsync(post);
+        return post.Id;
+    }
     
     public void Update(Post post) => _context.Posts.Update(post);
     
