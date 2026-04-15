@@ -2,8 +2,12 @@
 
 public class UnitOfWork : IUnitOfWork
 {
-    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    private readonly BlogDbContext _context;
+
+    public UnitOfWork(BlogDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
+    
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => await _context.SaveChangesAsync(cancellationToken);
 }
