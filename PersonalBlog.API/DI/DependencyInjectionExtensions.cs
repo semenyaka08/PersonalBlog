@@ -1,0 +1,15 @@
+﻿using PersonalBlog.BLL.Abstractions;
+using PersonalBlog.BLL.Services;
+
+namespace PersonalBlog.API.DI;
+
+public static class DependencyInjectionExtensions
+{
+    public static IServiceCollection AddBusinessLogicLayer(this IServiceCollection services)
+    {
+        services.AddScoped<IPostService, PostService>();
+        services.AddScoped<ICommentService, CommentService>();
+
+        return services;
+    }
+}
