@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PersonalBlog.API.DI;
+using PersonalBlog.API.Middlewares;
 using PersonalBlog.DAL;
 using PersonalBlog.DAL.DI;
 
@@ -11,6 +12,10 @@ builder.Services.AddBusinessLogicLayer();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 

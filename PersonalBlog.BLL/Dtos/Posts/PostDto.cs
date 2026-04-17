@@ -1,3 +1,5 @@
-﻿namespace PersonalBlog.BLL.Dtos.Posts;
+﻿using PersonalBlog.BLL.Dtos.Comments;
 
-public record PostDto(Guid Id, string Title, string Content, DateTime CreatedAt);
+namespace PersonalBlog.BLL.Dtos.Posts;
+
+public record PostDto(Guid Id, string Title, string Content, DateTime CreatedAt, IEnumerable<CommentDto> Comments);

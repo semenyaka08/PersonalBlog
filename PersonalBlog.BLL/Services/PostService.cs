@@ -1,5 +1,6 @@
 ﻿using PersonalBlog.BLL.Abstractions;
 using PersonalBlog.BLL.Dtos.Posts;
+using PersonalBlog.BLL.Mappers;
 using PersonalBlog.BLL.Queries.Comments;
 using PersonalBlog.BLL.Queries.Posts;
 using PersonalBlog.DAL.Entities;
@@ -23,7 +24,7 @@ public class PostService : IPostService
     {
         var posts = await _postRepository.GetAllAsync();
         
-        return posts.Select(p => new PostDto(p.Id, p.Title, p.Content, p.CreatedAt));
+        return posts.Select(p => p.ToDto());
     }
 
     public async Task<PostDto> GetPostAsync(GetPostByIdQuery query)
@@ -33,7 +34,7 @@ public class PostService : IPostService
         if (post == null)
             throw new KeyNotFoundException($"Post with id {query.Id} not found.");
             
-        return new PostDto(post.Id, post.Title, post.Content, post.CreatedAt);
+        return post.ToDto();
     }
 
     public async Task<PostDto> CreatePostAsync(CreatePostCommand command)
@@ -43,7 +44,7 @@ public class PostService : IPostService
         await _postRepository.AddAsync(post);
         await _unitOfWork.SaveChangesAsync();
         
-        return new PostDto(post.Id, post.Title, post.Content, post.CreatedAt);
+        return post.ToDto();
     }
 
     public async Task UpdatePostAsync(UpdatePostCommand command)
