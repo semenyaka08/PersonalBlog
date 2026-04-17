@@ -7,7 +7,7 @@ namespace PersonalBlog.BLL.Abstractions;
 public interface IPostService
 {
     Task<IEnumerable<PostDto>> GetPostsAsync(GetAllPostsQuery query);
-    Task<PostDto?> GetPostAsync(GetPostByIdQuery query);
+    Task<PostDto> GetPostAsync(GetPostByIdQuery query);
 
     Task<PostDto> CreatePostAsync(CreatePostCommand command);
     Task UpdatePostAsync(UpdatePostCommand command);
