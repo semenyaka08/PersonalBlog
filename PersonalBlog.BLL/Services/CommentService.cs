@@ -11,15 +11,23 @@ public class CommentService : ICommentService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICommentRepository _commentRepository;
+    private readonly IPostRepository _postRepository;
 
-    public CommentService(IUnitOfWork unitOfWork, ICommentRepository commentRepository)
+    public CommentService(IUnitOfWork unitOfWork, ICommentRepository commentRepository, IPostRepository postRepository)
     {
         _unitOfWork = unitOfWork;
         _commentRepository = commentRepository;
+        _postRepository = postRepository;
     }
 
     public async Task<Guid> AddCommentAsync(AddCommentCommand command)
     {
+        var post = await _postRepository.GetByIdAsync(command.PostId);
+        if (post == null)
+        {
+            throw new KeyNotFoundException($"Post with ID {command.PostId} not found.");
+        }
+        
         var comment = CreateComment(command.Text, command.PostId, command.CurrentUserId);
         
         var result = await _commentRepository.AddAsync(comment);

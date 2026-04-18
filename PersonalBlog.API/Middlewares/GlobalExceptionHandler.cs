@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using PersonalBlog.BLL.Exceptions;
 
 namespace PersonalBlog.API.Middlewares;
 
@@ -52,6 +53,13 @@ public class GlobalExceptionHandler : IExceptionHandler
                 httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
                 problemDetails.Title = "Validation Error";
                 problemDetails.Status = StatusCodes.Status400BadRequest;
+                problemDetails.Detail = exception.Message;
+                break;
+            
+            case ForbiddenAccessException:
+                httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+                problemDetails.Title = "Forbidden";
+                problemDetails.Status = StatusCodes.Status403Forbidden;
                 problemDetails.Detail = exception.Message;
                 break;
             
