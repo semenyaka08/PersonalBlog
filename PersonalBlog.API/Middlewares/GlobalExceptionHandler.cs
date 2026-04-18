@@ -32,8 +32,21 @@ public class GlobalExceptionHandler : IExceptionHandler
                 problemDetails.Status = StatusCodes.Status404NotFound;
                 problemDetails.Detail = exception.Message;
                 break;
+            
+            case UnauthorizedAccessException:
+                httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                problemDetails.Title = "Unauthorized";
+                problemDetails.Status = StatusCodes.Status401Unauthorized;
+                problemDetails.Detail = exception.Message;
+                break;
 
-
+            case ArgumentException:
+                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+                problemDetails.Title = "Bad Request";
+                problemDetails.Status = StatusCodes.Status400BadRequest;
+                problemDetails.Detail = exception.Message;
+                break;
+            
             default:
                 httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 problemDetails.Title = "Internal Server Error";

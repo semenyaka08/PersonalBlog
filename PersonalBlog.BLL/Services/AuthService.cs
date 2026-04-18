@@ -1,9 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using PersonalBlog.BLL.Abstractions;
 using PersonalBlog.BLL.Commands.Auth;
 using PersonalBlog.DAL.Constants;
@@ -27,7 +24,7 @@ public class AuthService : IAuthService
     public async Task<AuthResponse> RegisterAsync(RegisterCommand command)
     {
         if (!AllowedRoles.Contains(command.Role))
-            throw new Exception("Invalid role.");
+            throw new ArgumentException("Invalid role.");
         
         var user = new ApplicationUser
         {
