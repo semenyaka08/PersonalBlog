@@ -9,6 +9,10 @@ public class Post
     public string Content { get; set; } = string.Empty;
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    
+    public Guid AuthorId { get; set; }
+
+    public ApplicationUser? Author { get; set; }
 
     public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 }
