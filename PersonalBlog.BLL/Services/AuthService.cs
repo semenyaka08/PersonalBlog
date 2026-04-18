@@ -4,6 +4,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using PersonalBlog.BLL.Abstractions;
 using PersonalBlog.BLL.Commands.Auth;
+using PersonalBlog.BLL.Constants;
 using PersonalBlog.DAL.Constants;
 using PersonalBlog.DAL.Entities;
 
@@ -20,13 +21,9 @@ public class AuthService : IAuthService
         _userManager = userManager;
     }
     
-    private static List<AppRoles> AllowedRoles => [AppRoles.Author, AppRoles.Visitor];
-    
     public async Task<AuthResponse> RegisterAsync(RegisterCommand command)
     {
-        if (!AllowedRoles.Contains(command.Role))
-            throw new ArgumentException("Invalid role.");
-        
+        var appRole = GetAppRole(command.Role);   
         var user = new ApplicationUser
         {
             UserName = command.Email,
@@ -40,7 +37,7 @@ public class AuthService : IAuthService
             throw new ValidationException($"Registration failed: {errors}");
         }
 
-        await _userManager.AddToRoleAsync(user, command.Role.ToName());
+        await _userManager.AddToRoleAsync(user, appRole.ToName());
         
         var claims = await BuildClaimsAsync(user);
         var token = _jwtService.GenerateToken(claims);
@@ -74,5 +71,17 @@ public class AuthService : IAuthService
         claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
         return claims;
+    }
+
+    private static AppRoles GetAppRole(RegistrationRole role)
+    {
+        var appRole = role switch
+        {
+            RegistrationRole.Author => AppRoles.Author,
+            RegistrationRole.Visitor => AppRoles.Visitor,
+            _ => throw new ArgumentException("Invalid role.")
+        };
+        
+        return appRole;
     }
 }
