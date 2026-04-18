@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PersonalBlog.DAL\PersonalBlog.DAL.csproj" />
+      <Folder Include="Commands\Posts\" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Commands\Posts\" />
+      <ProjectReference Include="..\PersonalBlog.DAL\PersonalBlog.DAL.csproj" />
     </ItemGroup>
 
 </Project>

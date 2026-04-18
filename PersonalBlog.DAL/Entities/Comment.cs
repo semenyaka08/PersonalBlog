@@ -12,7 +12,7 @@ public class Comment
     
     public Post? Post { get; set; }
     
-    public Guid UserId { get; set; }
+    public Guid? UserId { get; set; } 
     
     public ApplicationUser? User { get; set; }
 }
