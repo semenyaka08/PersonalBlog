@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using PersonalBlog.DAL.Constants;
 using PersonalBlog.DAL.Entities;
 
@@ -10,6 +11,7 @@ public class DatabaseSeeder
     public static async Task SeedRolesAsync(IServiceProvider serviceProvider)
     {
         var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+        var logger = serviceProvider.GetRequiredService<ILogger<DatabaseSeeder>>();
         
         var roles = Enum.GetNames<AppRoles>();
 
@@ -17,7 +19,17 @@ public class DatabaseSeeder
         {
             if (!await roleManager.RoleExistsAsync(roleName))
             {
-                await roleManager.CreateAsync(new ApplicationRole(roleName));
+                var result = await roleManager.CreateAsync(new ApplicationRole(roleName));
+                
+                if (result.Succeeded)
+                {
+                    logger.LogInformation($"Role '{roleName}' successfully created.");
+                }
+                else
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    logger.LogError($"An Error while creating a role: '{roleName}': {errors}");
+                }
             }
         }
     }

@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PersonalBlog.API.DI;
 using PersonalBlog.API.Extensions;
 using PersonalBlog.API.Middlewares;
 using PersonalBlog.DAL;
 using PersonalBlog.DAL.DI;
+using PersonalBlog.DAL.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,8 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<BlogDbContext>();
         
         await context.Database.MigrateAsync();
+        
+        await DatabaseSeeder.SeedRolesAsync(services);
     }
     catch (Exception ex)
     {
