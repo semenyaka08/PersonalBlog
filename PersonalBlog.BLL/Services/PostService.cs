@@ -1,5 +1,6 @@
 ﻿using PersonalBlog.BLL.Abstractions;
 using PersonalBlog.BLL.Dtos.Posts;
+using PersonalBlog.BLL.Exceptions;
 using PersonalBlog.BLL.Mappers;
 using PersonalBlog.BLL.Queries.Comments;
 using PersonalBlog.BLL.Queries.Posts;
@@ -51,9 +52,13 @@ public class PostService : IPostService
     {
         var post = await _postRepository.GetByIdAsync(command.Id);
         
-        
         if (post == null)
             throw new KeyNotFoundException($"Post with id {command.Id} not found.");
+        
+        if (post.AuthorId != command.CurrentUserId)
+        {
+            throw new ForbiddenAccessException("You do not have permission to edit this post.");
+        }
         
         post.Title = command.Title;
         post.Content = command.Content;
@@ -68,6 +73,11 @@ public class PostService : IPostService
         
         if (post == null)
             return;
+        
+        if (post.AuthorId != command.CurrentUserId)
+        {
+            throw new ForbiddenAccessException("You do not have permission to edit this post.");
+        }
         
         _postRepository.Delete(post);
         await _unitOfWork.SaveChangesAsync();

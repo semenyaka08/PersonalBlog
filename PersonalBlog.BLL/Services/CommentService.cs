@@ -1,6 +1,6 @@
 ﻿using PersonalBlog.BLL.Abstractions;
 using PersonalBlog.BLL.Commands.Comments;
-using PersonalBlog.BLL.Dtos.Comments;
+using PersonalBlog.BLL.Exceptions;
 using PersonalBlog.DAL.Entities;
 using PersonalBlog.DAL.Repositories.Interfaces;
 using PersonalBlog.DAL.UnitOfWork;
@@ -28,12 +28,15 @@ public class CommentService : ICommentService
         return result;
     }
 
-    public async Task DeleteCommentAsync(Guid commentId)
+    public async Task DeleteCommentAsync(DeleteCommentCommand command)
     {
-        var comment = await _commentRepository.GetByIdAsync(commentId);
+        var comment = await _commentRepository.GetByIdAsync(command.Id);
         
         if (comment == null)
             return;
+        
+        if (comment.UserId == null || comment.UserId != command.CurrentUserId)
+            throw new ForbiddenAccessException("You do not have permission to delete this comment.");
         
         _commentRepository.Delete(comment);
         await _unitOfWork.SaveChangesAsync();

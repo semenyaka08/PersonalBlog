@@ -7,5 +7,5 @@ public interface ICommentService
 {
     Task<Guid> AddCommentAsync(AddCommentCommand command);
     
-    Task DeleteCommentAsync(Guid commentId);
+    Task DeleteCommentAsync(DeleteCommentCommand command);
 }
