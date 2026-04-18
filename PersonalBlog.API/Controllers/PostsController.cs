@@ -44,7 +44,8 @@ public class PostsController : ControllerBase
     [Authorize(Policy = AppPolicies.CanWritePosts)]
     public async Task<IActionResult> CreatePost([FromBody] CreatePostRequest request)
     {
-        var command = new CreatePostCommand(request.Title, request.Content);
+        var currentUserId = User.GetUserId();
+        var command = new CreatePostCommand(request.Title, request.Content, currentUserId);
         
         var post = await _postService.CreatePostAsync(command);
         return CreatedAtAction(nameof(GetPost), new { id = post.Id }, post);

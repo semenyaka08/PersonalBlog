@@ -1,20 +1,44 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PersonalBlog.API.DI;
+using Microsoft.OpenApi;
 using PersonalBlog.API.Extensions;
 using PersonalBlog.API.Middlewares;
+using PersonalBlog.BLL.DI;
 using PersonalBlog.DAL;
+using PersonalBlog.DAL.DataSeeding;
 using PersonalBlog.DAL.DI;
-using PersonalBlog.DAL.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDataAccessLayer(builder.Configuration);
 builder.Services.AddBusinessLogicLayer();
+builder.Services.AddIdentityConfiguration();
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token in the text input below.",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
+    });
+
+    options.AddSecurityRequirement(doc => new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecuritySchemeReference("Bearer"),
+            []
+        }
+    });
+});
+
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
@@ -25,16 +49,20 @@ var app = builder.Build();
 
 app.UseExceptionHandler();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         var context = services.GetRequiredService<BlogDbContext>();
+        var databaseSeeder = services.GetRequiredService<IDatabaseSeeder>();
         
         await context.Database.MigrateAsync();
         
-        await DatabaseSeeder.SeedRolesAsync(services);
+        await databaseSeeder.SeedAsync();
     }
     catch (Exception ex)
     {

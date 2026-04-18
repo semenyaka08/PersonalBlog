@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using PersonalBlog.BLL.Abstractions;
@@ -36,7 +37,7 @@ public class AuthService : IAuthService
         if (!result.Succeeded)
         {
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-            throw new Exception($"Registration failed: {errors}");
+            throw new ValidationException($"Registration failed: {errors}");
         }
 
         await _userManager.AddToRoleAsync(user, command.Role.ToName());

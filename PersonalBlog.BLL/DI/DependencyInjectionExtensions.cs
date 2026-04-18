@@ -1,7 +1,8 @@
-﻿using PersonalBlog.BLL.Abstractions;
+﻿using Microsoft.Extensions.DependencyInjection;
+using PersonalBlog.BLL.Abstractions;
 using PersonalBlog.BLL.Services;
 
-namespace PersonalBlog.API.DI;
+namespace PersonalBlog.BLL.DI;
 
 public static class DependencyInjectionExtensions
 {
@@ -9,6 +10,8 @@ public static class DependencyInjectionExtensions
     {
         services.AddScoped<IPostService, PostService>();
         services.AddScoped<ICommentService, CommentService>();
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IJwtService, JwtService>();
 
         return services;
     }

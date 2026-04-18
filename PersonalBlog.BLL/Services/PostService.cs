@@ -40,7 +40,7 @@ public class PostService : IPostService
 
     public async Task<PostDto> CreatePostAsync(CreatePostCommand command)
     {
-        var post = CreatePost(command.Title, command.Content);
+        var post = CreatePost(command.Title, command.Content, command.CurrentUserId);
         
         await _postRepository.AddAsync(post);
         await _unitOfWork.SaveChangesAsync();
@@ -83,8 +83,8 @@ public class PostService : IPostService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    private static Post CreatePost(string title, string content)
+    private static Post CreatePost(string title, string content, Guid authorId)
     {
-        return new Post { Title = title, Content = content };
+        return new Post { Title = title, Content = content, AuthorId = authorId };
     }
 }

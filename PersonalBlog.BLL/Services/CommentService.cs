@@ -20,7 +20,7 @@ public class CommentService : ICommentService
 
     public async Task<Guid> AddCommentAsync(AddCommentCommand command)
     {
-        var comment = CreateComment(command.Text, command.PostId);
+        var comment = CreateComment(command.Text, command.PostId, command.CurrentUserId);
         
         var result = await _commentRepository.AddAsync(comment);
         await _unitOfWork.SaveChangesAsync();
@@ -42,10 +42,11 @@ public class CommentService : ICommentService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    private static Comment CreateComment(string text, Guid postId)
+    private static Comment CreateComment(string text, Guid postId, Guid authorId)
     {
         return new Comment
         {
+            UserId = authorId,
             Text = text,
             PostId = postId,
         };

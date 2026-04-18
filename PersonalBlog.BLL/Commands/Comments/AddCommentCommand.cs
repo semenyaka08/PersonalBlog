@@ -1,3 +1,3 @@
 ﻿namespace PersonalBlog.BLL.Commands.Comments;
 
-public record AddCommentCommand(Guid PostId, string Text);
+public record AddCommentCommand(Guid PostId, string Text, Guid CurrentUserId);

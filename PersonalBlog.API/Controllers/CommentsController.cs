@@ -23,7 +23,7 @@ public class CommentsController : ControllerBase
     [Authorize(Policy = AppPolicies.CanWriteComments)]
     public async Task<IActionResult> AddComment(Guid postId, [FromBody] CreateCommentRequest request)
     {
-        var command = new AddCommentCommand(postId, request.Text);
+        var command = new AddCommentCommand(postId, request.Text, User.GetUserId());
         var commentId = await _commentService.AddCommentAsync(command);
         
         return Ok(new { Id = commentId });

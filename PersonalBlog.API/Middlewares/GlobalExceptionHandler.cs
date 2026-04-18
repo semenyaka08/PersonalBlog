@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PersonalBlog.API.Middlewares;
@@ -17,7 +18,7 @@ public class GlobalExceptionHandler : IExceptionHandler
         Exception exception,
         CancellationToken cancellationToken)
     {
-        _logger.LogError(exception, "Сталася помилка: {Message}", exception.Message);
+        _logger.LogError(exception, "An error occured: {Message}", exception.Message);
 
         var problemDetails = new ProblemDetails
         {
@@ -43,6 +44,13 @@ public class GlobalExceptionHandler : IExceptionHandler
             case ArgumentException:
                 httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
                 problemDetails.Title = "Bad Request";
+                problemDetails.Status = StatusCodes.Status400BadRequest;
+                problemDetails.Detail = exception.Message;
+                break;
+            
+            case ValidationException:
+                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+                problemDetails.Title = "Validation Error";
                 problemDetails.Status = StatusCodes.Status400BadRequest;
                 problemDetails.Detail = exception.Message;
                 break;
